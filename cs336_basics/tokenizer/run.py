@@ -34,26 +34,32 @@ if __name__ == "__main__":
     # vocab, merges = pre_tokenization.run()
     # print("Longest Vocab:", sorted(vocab.values(), key=lambda x: len(x), reverse=True)[:20])
     # with open(f"vocab_merges_output_{vocab_size}.txt", "w", encoding="utf-8") as f:
-    #     f.write(repr(vocab)  + "\n")
-    #     f.write(repr(merges) + "\n")
-    vocab_filepath = "./vocab_output_10000.txt"
-    merges_filepath = "./merges_output_10000.txt"
+    # #     f.write(repr(vocab)  + "\n")
+    # #     f.write(repr(merges) + "\n")
+    # vocab_filepath = "./vocab_output_10000.txt"
+    # merges_filepath = "./merges_output_10000.txt"
+    # tokenizer = Tokenizer.from_files(Tokenizer,vocab_filepath=vocab_filepath, merges_filepath=merges_filepath, special_tokens=["<|endoftext|>"])
+    # # input_str = 'Hello, how <|endoftext|><|endoftext|> are you?<|endoftext|>'
+    # # special_tokens=sorted(["<|endoftext|>", "<|endoftext|><|endoftext|>"], reverse=True)
+    # # pattern = '|'.join(['('+re.escape(st)+')' for st in special_tokens])
+    # # print(pattern)
+    # # print([x for x in re.split(pattern, input_str)])
+    # # encode_list = tokenizer.encode(input_str)
+    # # print(encode_list)
+    # # print([tokenizer.decode([x]) for x in encode_list])
+    # tiny_sample = "./data/owt_train.txt"
+    # output_path = "./data/TinyStoriesV2-GPT4-train-tokenid.txt.npy"
+    # # owt_sample = "./data/owt_samples.txt"
+    # owt_token = np.load(output_path)
+    # print(tokenizer.decode(owt_token[-1000:]))
+    # encode_file(file_path=tiny_sample, output_path=output_path, vocab_filepath=vocab_filepath, merges_filepath=merges_filepath, special_tokens=["<|endoftext|>"])
+
     owt_vocab_filepath = "./vocab_output_32000.txt"
     owt_merges_filepath = "./merges_output_32000.txt"
-    # tokenizer = Tokenizer.from_files(Tokenizer,vocab_filepath=vocab_filepath, merges_filepath=merges_filepath, special_tokens=["<|endoftext|>"])
-    # input_str = 'Hello, how <|endoftext|><|endoftext|> are you?<|endoftext|>'
-    # special_tokens=sorted(["<|endoftext|>", "<|endoftext|><|endoftext|>"], reverse=True)
-    # pattern = '|'.join(['('+re.escape(st)+')' for st in special_tokens])
-    # print(pattern)
-    # print([x for x in re.split(pattern, input_str)])
-    # encode_list = tokenizer.encode(input_str)
-    # print(encode_list)
-    # print([tokenizer.decode([x]) for x in encode_list])
-    tiny_sample = "./data/owt_train.txt"
+    tokenizer = Tokenizer.from_files(Tokenizer,vocab_filepath=owt_vocab_filepath, merges_filepath=owt_merges_filepath, special_tokens=["<|endoftext|>"])
     output_path = "./data/owt-train-tokenid.txt"
-    # owt_sample = "./data/owt_samples.txt"
-    encode_file(file_path=tiny_sample, output_path=output_path, vocab_filepath=vocab_filepath, merges_filepath=merges_filepath, special_tokens=["<|endoftext|>"])
-    # encode_file(file_path=owt_sample, vocab_filepath=vocab_filepath, merges_filepath=merges_filepath, special_tokens=["<|endoftext|>"])
-    # encode_file(file_path=tiny_sample, vocab_filepath=owt_vocab_filepath, merges_filepath=owt_merges_filepath, special_tokens=["<|endoftext|>"])
-    # encode_file(file_path=owt_sample, vocab_filepath=owt_vocab_filepath, merges_filepath=owt_merges_filepath, special_tokens=["<|endoftext|>"])
+    owt_sample = "./data/owt_train.txt"
+    encode_file(file_path=owt_sample, output_path=output_path, vocab_filepath=owt_vocab_filepath, merges_filepath=owt_merges_filepath, special_tokens=["<|endoftext|>"])
+    owt_tokens = np.load(output_path+".npy")
+    print(tokenizer.decode(owt_tokens[-1000:]))
 

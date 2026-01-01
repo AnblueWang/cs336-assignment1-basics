@@ -15,16 +15,16 @@ class MultiHeadSelfAttention(Module):
     def forward(self, x: torch.Tensor, theta:float|None=None, token_positions: torch.Tensor|None=None) -> torch.Tensor:
         seq_len = x.size()[-2]
         d_model = x.size()[-1]
-        K = rearrange(self.weight_K.forward(x), "batch seq_len (h d_k) -> batch h seq_len d_k", h=self.head_num)
-        Q = rearrange(self.weight_Q.forward(x), "batch seq_len (h d_k) -> batch h seq_len d_k", h=self.head_num)
-        V = rearrange(self.weight_V.forward(x), "batch seq_len (h d_k) -> batch h seq_len d_k", h=self.head_num)
+        K = rearrange(self.weight_K.forward(x), "batch seq_len (h d_k) -> h batch seq_len d_k", h=self.head_num)
+        Q = rearrange(self.weight_Q.forward(x), "batch seq_len (h d_k) -> h batch seq_len d_k", h=self.head_num)
+        V = rearrange(self.weight_V.forward(x), "batch seq_len (h d_k) -> h batch seq_len d_k", h=self.head_num)
 
         mask = torch.tril(torch.ones((seq_len,seq_len)), diagonal=0).to(torch.bool)
         if theta != None and token_positions != None:
             rope_layer = rope.RoPE(theta=theta, d_k=d_model/self.head_num, max_seq_len=seq_len)
             K = rope_layer.forward(K, token_positions=token_positions)
             Q = rope_layer.forward(Q, token_positions=token_positions)
-        mha = rearrange(functions.ScaledDotAttention(Q, K, V, mask), "batch h seq_len d_k -> batch seq_len (h d_k)")
+        mha = rearrange(functions.scaled_dot_attention(Q, K, V, mask), "h batch seq_len d_k -> batch seq_len (h d_k)")
         return self.weight_O.forward(mha)
 
 

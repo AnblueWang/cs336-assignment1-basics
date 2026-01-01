@@ -1,5 +1,6 @@
 import torch
 from torch.nn import Module
+from einops import einsum
 
 class RoPE(Module):
     def __init__(self, theta: float, d_k: int, max_seq_len: int, device=None):
@@ -16,5 +17,5 @@ class RoPE(Module):
         first_half = x[..., 1::2]
         second_half = x[..., ::2]
         new_x = torch.stack((-first_half,second_half),dim=-1).flatten(-2) # [-x2, x1, -x3, x4]
-        return x*(self.cos[token_positions])+new_x*(self.sin[token_positions])
+        return einsum(x, self.cos[token_positions], "... seq_len d_k, ... seq_len d_k -> ... seq_len d_k")+einsum(new_x, self.sin[token_positions], "... seq_len d_k, ... seq_len d_k -> ... seq_len d_k")
     
