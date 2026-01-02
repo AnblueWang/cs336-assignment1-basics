@@ -17,9 +17,9 @@ def decode(user_prompt: str, max_generation_length: int = 100, temperature: floa
     parser = argparse.ArgumentParser(description="transformerlm from scratch")
 
     parser.add_argument("--num_layers", type=int, default=12)
-    parser.add_argument("--d_model", type=int, default=160)
+    parser.add_argument("--d_model", type=int, default=240)
     parser.add_argument("--num_heads", type=int, default=4)
-    parser.add_argument("--d_ff", type=int, default=640)
+    parser.add_argument("--d_ff", type=int, default=960)
     parser.add_argument("--use_cuda", type=bool, default=False)
     parser.add_argument("--max_seqlen", type=int, default=200)
     parser.add_argument("--vocab_size", type=int, default=10000)
@@ -75,4 +75,4 @@ def decode(user_prompt: str, max_generation_length: int = 100, temperature: floa
     logger.info(f"The total compleletion has {index} generated tokens. put as a whole: {tokenizer.decode(input_tokens[0].tolist())}")
 
 if __name__ == "__main__":
-    decode("I have a good memory.")
+    decode("I have a good memory. it was a great time to be a dragon in the fareast")

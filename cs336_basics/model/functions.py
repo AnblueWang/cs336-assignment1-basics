@@ -39,9 +39,11 @@ def gradient_clipping(parameters: typing.Iterable[torch.nn.Parameter], max_l2_no
     total_norm = torch.norm(torch.stack([torch.norm(p.grad, 2) for p in parameters]), 2)
     # Scale all parameters by the same factor
     clip_coef = max_l2_norm / (total_norm + eps)
-    if clip_coef < 1.0:
-        for p in parameters:
-            p.grad.mul_(clip_coef)
+    # Clamp the coefficient to 1.0 so it never "increases" gradients
+    clip_coef_clamped = torch.clamp(torch.tensor(clip_coef, device=total_norm.device), max=1.0)
+    for p in parameters:
+        if p.grad is not None:
+            p.grad.detach().mul_(clip_coef_clamped)
 
 def get_batch_input(input: np.array, batch_size: int, context_length: int, device: torch.device|str="cpu"):
     input_len = len(input)

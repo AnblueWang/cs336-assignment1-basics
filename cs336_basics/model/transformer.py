@@ -20,7 +20,7 @@ class TransformerBlock(Module):
 class TransformerLM(Module):
     def __init__(self, vocab_size:int, context_length:int, num_layers:int, d_model:int, num_heads:int, d_ff:int, device:torch.device|None=None, dtype:torch.dtype|None=None):
         super().__init__()
-        self.embedding = embedding.Embedding(vocab_size, d_model)
+        self.embedding = embedding.Embedding(vocab_size, d_model, device=device, dtype=dtype)
         self.layers = ModuleList([TransformerBlock(d_model, num_heads, d_ff, device, dtype) for _ in range(num_layers)])
         self.output_norm = rmsnorm.RMSNorm(d_model, device=device, dtype=dtype)
         self.lm_head = linear.Linear(d_model, vocab_size, device, dtype)
